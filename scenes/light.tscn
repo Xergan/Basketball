@@ -1,0 +1,192 @@
+[gd_scene load_steps=16 format=3 uid="uid://cyaov86mcrgrx"]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_hy5ge"]
+[ext_resource type="FontFile" uid="uid://br6iwvpd1a2d2" path="res://assets/Soft Elegance.ttf" id="2_v0jqi"]
+[ext_resource type="PackedScene" uid="uid://dlwp0rk4jov03" path="res://prefabs/basket.tscn" id="3_lmnwp"]
+[ext_resource type="Script" path="res://scripts/destroyer.gd" id="5_q82pg"]
+
+[sub_resource type="Gradient" id="Gradient_qyfyo"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.960351, 0.960351, 0.960351, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_66yyh"]
+gradient = SubResource("Gradient_qyfyo")
+
+[sub_resource type="LabelSettings" id="LabelSettings_kxaxt"]
+font = ExtResource("2_v0jqi")
+font_size = 150
+font_color = Color(0.47788, 0.47788, 0.47788, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_nxhua"]
+font = ExtResource("2_v0jqi")
+font_size = 26
+font_color = Color(0.478431, 0.478431, 0.478431, 1)
+
+[sub_resource type="Gradient" id="Gradient_be40l"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.873298, 0.873298, 0.873298, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2joy0"]
+gradient = SubResource("Gradient_be40l")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1m001"]
+size = Vector2(576, 32)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_dkdv7"]
+
+[sub_resource type="Animation" id="Animation_4j6p7"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Basket:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(288, 248)]
+}
+
+[sub_resource type="Animation" id="Animation_b6kda"]
+resource_name = "basket"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Basket:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(288, 248), Vector2(492, 248), Vector2(288, 248), Vector2(92, 248), Vector2(288, 248)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_820ah"]
+_data = {
+"RESET": SubResource("Animation_4j6p7"),
+"basket": SubResource("Animation_b6kda")
+}
+
+[node name="game" type="Node2D" groups=["Persist"]]
+script = ExtResource("1_hy5ge")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(288, 512)
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -999
+position = Vector2(288, 511.75)
+scale = Vector2(2.25, 1024.5)
+texture = SubResource("GradientTexture1D_66yyh")
+metadata/_edit_lock_ = true
+
+[node name="ScoreControl" type="Control" parent="."]
+unique_name_in_owner = true
+z_index = -2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Score" type="Label" parent="ScoreControl"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 248.5
+offset_top = 512.0
+offset_right = 327.5
+offset_bottom = 682.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "0"
+label_settings = SubResource("LabelSettings_kxaxt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="High" type="Label" parent="ScoreControl"]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 48.0
+offset_right = 559.0
+offset_bottom = 79.0
+text = "0"
+label_settings = SubResource("LabelSettings_nxhua")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="ScoreControl"]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 16.0
+offset_right = 559.0
+offset_bottom = 47.0
+text = "High Score"
+label_settings = SubResource("LabelSettings_nxhua")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Floor" type="StaticBody2D" parent="."]
+z_index = 1
+position = Vector2(360, 960)
+collision_mask = 4
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Floor"]
+position = Vector2(-72, 0)
+scale = Vector2(2.25, 128.25)
+texture = SubResource("GradientTexture1D_2joy0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+position = Vector2(-72, 48)
+shape = SubResource("RectangleShape2D_1m001")
+
+[node name="Basket" parent="." instance=ExtResource("3_lmnwp")]
+unique_name_in_owner = true
+position = Vector2(288, 248)
+scale = Vector2(2, 2)
+
+[node name="Destroyer" type="Area2D" parent="."]
+position = Vector2(288, 1024)
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("5_q82pg")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Destroyer"]
+shape = SubResource("WorldBoundaryShape2D_dkdv7")
+
+[node name="Spawns" type="Node2D" parent="."]
+unique_name_in_owner = true
+metadata/_edit_lock_ = true
+
+[node name="Spawn" type="Marker2D" parent="Spawns"]
+position = Vector2(286, 914)
+
+[node name="Spawn2" type="Marker2D" parent="Spawns"]
+position = Vector2(106, 914)
+
+[node name="Spawn3" type="Marker2D" parent="Spawns"]
+position = Vector2(466, 914)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_820ah")
+}
+speed_scale = 0.0
+
+[connection signal="body_entered" from="Destroyer" to="Destroyer" method="_on_body_entered"]

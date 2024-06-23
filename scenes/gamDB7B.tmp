@@ -1,0 +1,82 @@
+[gd_scene load_steps=12 format=3 uid="uid://cyaov86mcrgrx"]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_triqu"]
+[ext_resource type="PackedScene" uid="uid://dlwp0rk4jov03" path="res://prefabs/basket.tscn" id="2_mlheu"]
+[ext_resource type="Script" path="res://scripts/destroyer.gd" id="3_oijc6"]
+[ext_resource type="Script" path="res://scripts/checkpoint.gd" id="4_7otv0"]
+
+[sub_resource type="Gradient" id="Gradient_qyfyo"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.960351, 0.960351, 0.960351, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_66yyh"]
+gradient = SubResource("Gradient_qyfyo")
+
+[sub_resource type="Gradient" id="Gradient_be40l"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.581033, 0.581033, 0.581033, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2joy0"]
+gradient = SubResource("Gradient_be40l")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1m001"]
+size = Vector2(720, 32)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_dkdv7"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_jwwpj"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_triqu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -999
+position = Vector2(360, 639.75)
+scale = Vector2(2.8125, 1280.5)
+texture = SubResource("GradientTexture1D_66yyh")
+
+[node name="Floor" type="StaticBody2D" parent="."]
+z_index = 1
+position = Vector2(360, 1216)
+collision_mask = 4
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Floor"]
+scale = Vector2(2.8125, 128.25)
+texture = SubResource("GradientTexture1D_2joy0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+position = Vector2(0, 48)
+shape = SubResource("RectangleShape2D_1m001")
+
+[node name="Basket" parent="." instance=ExtResource("2_mlheu")]
+position = Vector2(352, 296)
+scale = Vector2(2.5, 2.5)
+
+[node name="Destroyer" type="Area2D" parent="."]
+position = Vector2(320, 1344)
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("3_oijc6")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Destroyer"]
+shape = SubResource("WorldBoundaryShape2D_dkdv7")
+
+[node name="Spawn" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(360, 1192)
+
+[node name="Checkpoint" type="Area2D" parent="."]
+position = Vector2(352, 512)
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("4_7otv0")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint"]
+shape = SubResource("WorldBoundaryShape2D_jwwpj")
+
+[connection signal="ball_destroyed" from="Destroyer" to="." method="_on_destroyer_ball_destroyed"]
+[connection signal="body_entered" from="Destroyer" to="Destroyer" method="_on_body_entered"]
+[connection signal="body_entered" from="Checkpoint" to="Checkpoint" method="_on_body_entered"]
